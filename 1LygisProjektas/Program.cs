@@ -4,74 +4,139 @@
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Iveskite varda ir pavarde");
-            string currentUser = Console.ReadLine();
-
-            Console.Clear();
-
-            Console.WriteLine($"Sveiki atvyke {currentUser}");
-
+            Console.WriteLine("LAUROS PROTMUSIS");
             Console.WriteLine();
-            Console.WriteLine("1. Zaidimo taisykles");
-            Console.WriteLine("2. Pradeti zaidima");
-            Console.WriteLine("3. Zaidimo rezultatai ir dalyviu perziura");
-            Console.WriteLine("4. Atsijungimas");
-            Console.WriteLine("q. Isejimas is zaidimo");
+            Dictionary<string, int> namesSurnamesAndScores = new();
 
-            char choice = Console.ReadKey().KeyChar;  //readkey grazina objekta, viduje yra char
-            Console.Clear();
+            bool showLogIn = true;
 
-            // q back
-            switch (choice)
+            while (showLogIn)
             {
-                case '1':
-                    GameRules();
-                    break;
 
-                case '2':
-                    GameLogic();
-                    break;
+                Console.WriteLine("Iveskite varda ir pavarde: ");
+                string currentUser = Console.ReadLine();
+                Console.Clear();
 
-                case '3':
-                    HighScore();
-                    break;
+                if (namesSurnamesAndScores.ContainsKey(currentUser))
+                {
+                    Console.WriteLine("Vartotojo paskyra jau egzistuoja");
+                }
+                else
+                {
+                    namesSurnamesAndScores.Add(currentUser, 0);
+                    Console.WriteLine($"Sveiki atvyke, {currentUser} !");
+                }
 
-                case '4':
-                    Console.WriteLine("Atsijungete");
-                    break;
+                bool showMenu = true;
 
-                case 'q':
-                    Console.WriteLine("ESC");
-                    break;
+                while (showMenu)
+                {
+                    Console.WriteLine("------------------------------------");
+                    Console.WriteLine("1. Zaidimo taisykles");
+                    Console.WriteLine("2. PRADETI ZAIDIMA");
+                    Console.WriteLine("3. Zaidimo rezultatai");
+                    Console.WriteLine("4. Atsijungimas");
+                    Console.WriteLine("q. Isejimas is zaidimo");
+                    Console.WriteLine("------------------------------------");
+
+                    char choice = Console.ReadKey().KeyChar;
+                    Console.Clear();
+
+
+                    switch (choice)
+                    {
+                        case '1':
+                            GameRules(currentUser);
+                            break;
+
+                        case '2':
+                            GameLogic(currentUser, namesSurnamesAndScores);
+                            break;
+
+                        case '3':
+                            HighScore(currentUser, namesSurnamesAndScores);
+                            break;
+
+                        case '4':
+                            showMenu = false;
+                            Console.Clear();
+                            Console.WriteLine("Atsijungete");
+                            break;
+
+                        case 'q':
+                            showMenu = false;
+                            showLogIn = false;
+                            break;
+                    }
+                }
             }
         }
-        public static void GameRules()
+        public static void GameRules(string currentUser)
         {
-            Console.WriteLine("Taisykles");
+            Console.WriteLine(currentUser);
+            Console.WriteLine("-----------------------------------------------------------------");
+            Console.WriteLine("Sveikiname prisijungus prie LAUROS PROTMUSIO zaidimo!");
+            Console.WriteLine("\nSis protmusis Jums leidzia pasirinkti is 4 klausimu kategoriju." +
+            "\nPasirinkus kategoriją pradėsite žaidimą ir turėsite pasirinkti \n1 is 4 " +
+            "galimų variantų, kuris yra teisingas atsakymas.");
+            Console.WriteLine();
+            Console.WriteLine("Grįžti atgal (q)");
+            Console.WriteLine("------------------------------------------------------------------");
+           
+
+            while (true)
+            {
+                char choice = Console.ReadKey().KeyChar;
+                if (choice == 'q')
+                {
+                    break;
+                }
+                else
+                {
+
+                }
+            }
+            Console.Clear();
         }
-        public static void GameLogic()
+        public static void GameLogic(string currentUser, Dictionary<string, int> namesSurnamesAndScores)
         {
+            Console.WriteLine(currentUser);
+            Console.WriteLine();
             Console.WriteLine("Pasirinkite klausimu kategorija " +
-                "\n\n1.MOKSLAS \n2.PASAULIO ISTORIJA \n3.MENAS \n4.GYVUNIJA \n5.BENDROS ZINIOS");
-            //bendros zinios
+                "\n\n1.MOKSLAS \n2.PASAULIO ISTORIJA \n3.MENAS \n4.BENDROS ZINIOS");
+            
 
             char choice = Console.ReadKey().KeyChar;
             Console.Clear();
             switch (choice)
             {
                 case '1':
-                    Console.WriteLine("Pasirinkote moksla");
+                    AskQuestions(Questions.GetScienceQuestions(), currentUser, namesSurnamesAndScores);
+                    break;
 
-                    AskQuestions(Questions.GetScienceQuestions());
+                case '2':
+                    AskQuestions(Questions.GetWordHistoryQuestions(), currentUser, namesSurnamesAndScores);
+                    break;
+
+                case '3':
+                    AskQuestions(Questions.GetArtQuestions(), currentUser, namesSurnamesAndScores);
+                    break;
+
+                case '4':
+                    AskQuestions(Questions.GetGeneralKnowledgeQuestions(), currentUser, namesSurnamesAndScores);
                     break;
             }
         }
 
 
-        public static void AskQuestions(Dictionary<string, char> questionsAndAnswers)
+        public static void AskQuestions(Dictionary<string, char> questionsAndAnswers, string currentUser, Dictionary<string, int> namesSurnamesAndScores)
         {
+            namesSurnamesAndScores[currentUser] = 0;
+
             foreach (KeyValuePair<string, char> questionAndAnswer in questionsAndAnswers)
             {
+                Console.WriteLine(currentUser);
+                Console.WriteLine();
                 Console.WriteLine(questionAndAnswer.Key);
                 char choice = Console.ReadKey().KeyChar;
                 Console.Clear();
@@ -79,19 +144,36 @@
                 if (choice == questionAndAnswer.Value)
                 {
                     Console.WriteLine("Teisingas atsakymas");
+                    namesSurnamesAndScores[currentUser] += 1;
                 }
                 else
                 {
-                    Console.WriteLine("Neteisingas atsakymas");
+                    Console.WriteLine("Neteisingas atsakymas"); 
                 }
+                Console.WriteLine();
+                Console.WriteLine("Taskai: " + namesSurnamesAndScores[currentUser] + "/" + questionsAndAnswers.Count);
                 Console.ReadKey();
                 Console.Clear();
             }
-
+            Console.WriteLine("Zaidimas baigesi"+
+                "\nAciu, kad dalyvavote");
+            Console.ReadKey();
+            Console.Clear();
         }
-        public static void HighScore()
+        public static void HighScore(string currentUser, Dictionary<string, int> scores)
         {
-            Console.WriteLine("TOP zaidejai");
+            Console.WriteLine(currentUser);
+            Console.WriteLine();
+            
+
+            foreach (KeyValuePair<string, int> score in scores)
+            {
+                string name = score.Key;
+                int playerScore = score.Value;
+                Console.WriteLine(name + " " + playerScore);
+            }
+            Console.ReadKey();
+            Console.Clear();
         }
     }
 }
