@@ -91,10 +91,6 @@
                 {
                     break;
                 }
-                else
-                {
-
-                }
             }
             Console.Clear();
         }
@@ -170,9 +166,20 @@
             {
                 string name = score.Key;
                 int playerScore = score.Value;
-                Console.WriteLine(name + " " + playerScore);
+                Console.WriteLine(name + " - " + playerScore + " taskai");
             }
-            Console.ReadKey();
+
+            Console.WriteLine();
+            Console.WriteLine("Grįžti atgal (q)");
+
+            while (true)
+            {
+                char choice = Console.ReadKey().KeyChar;
+                if (choice == 'q')
+                {
+                    break;
+                }
+            }
             Console.Clear();
         }
     }
